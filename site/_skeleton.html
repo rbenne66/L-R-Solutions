@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title></title>
+		
+		<!-- Vue - https://vuejs.org/ -->
+		<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+		<!-- Bootstrap - https://getbootstrap.com/ -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+		<script>
+			window.onload = function(){
+			
+
+				document.vm = new Vue({
+					el: '#vue-root',
+					data: {
+					searchTerm: null,
+						games: [
+							{ title: 'TrackMania', platforms: ['PC', 'Xbox'], genre: 'Racing' },
+							{ title: 'Super Smash Bros', platforms: ['Nintendo'], genre: 'Fighting' },
+							{ title: 'Minecraft', platforms: ['PC', 'Xbox', 'Mobile'], genre: 'Sandbox' },
+							{ title: 'Rocket League', platforms: ['PC', 'Xbox', 'Mobile', 'Playstation'], genre: 'Sports' },
+							{ title: 'Among Us', platforms: ['PC', 'Mobile'], genre: 'Mystery' }
+						]
+					},
+					computed: {
+						filteredGames(){
+						if(!this.searchTerm)
+						{
+							return this.games;
+						}
+
+							const filtered = this.games.filter(game =>
+								game.title.toLowerCase().indexOf(this.searchTerm.toLowerCase())  !== -1
+								|| game.genre.toLowerCase().indexOf(this.searchTerm.toLowerCase()) !== -1						
+								);
+
+							console.log('filtered recomputed', filtered);
+							return filtered;
+						}
+					},
+
+					methods: {
+						highlightSearchTerm: function(val, searchTerm){
+			    const regexSearchTerm = new RegExp(searchTerm, 'gi');
+				const highlighted = val.replace(regexSearchTerm, '<span class ="bg-success text-white">$&</span>');
+				return highlighted;
+			  }
+					}
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<div id="vue-root" class="container mt-2">
+		<div class="row mb-3">
+			<input type="text" v-model="searchTerm" class="form-control" placeholder="PUT YO STUFF HERE" />
+		</div> 
+			<table id="game-list" class="table table-bordered">
+			<thead>
+			<tr>
+			<th>Game Title</th>
+			<th>Platforms</th>
+			<th>Genre</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr v-for="game in filteredGames">
+			<td v-html="highlightSearchTerm(game.title, searchTerm)"></td>
+			<td>{{ game.platforms }}</td>
+			<td v-html="highlightSearchTerm(game.genre, searchTerm)"></td>
+			</tr>
+			
+			</tbody>
+			</table
+		</div>
+	</body>
+</html>
